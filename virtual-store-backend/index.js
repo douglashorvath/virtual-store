@@ -7,6 +7,7 @@ const app = express();
 const PORT = 3001;
 
 // Configuração do banco de dados
+
 // const db = mysql.createConnection({
 //     host: 'localhost',
 //     user: 'libertet_virtualstore',
