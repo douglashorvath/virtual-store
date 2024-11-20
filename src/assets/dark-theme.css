@@ -1,0 +1,60 @@
+body {
+    background-color: #000000;
+    /* Fundo preto */
+    color: #ffffff;
+    /* Texto branco */
+}
+
+.navbar {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.navbar a,
+.navbar .navbar-brand {
+    color: #ffffff !important;
+}
+
+.card {
+    background-color: #1a1a1a;
+    /* Fundo quase preto para contraste */
+    color: #ffffff;
+    border: 1px solid #333333;
+}
+
+.card .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.card .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-light {
+    background-color: #333333;
+    /* Botões em tom de cinza escuro */
+    color: #ffffff;
+    border-color: #444444;
+}
+
+.btn-light:hover {
+    background-color: #555555;
+}
+
+input.form-control,
+textarea.form-control,
+select.form-control {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid #444444;
+}
+
+input.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px #007bff;
+}
+
+.badge {
+    background-color: #ff4d4d;
+}

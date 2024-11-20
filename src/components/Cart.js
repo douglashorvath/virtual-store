@@ -1,10 +1,32 @@
 import React from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
-const Cart = ({ cart, setCart, userId, onPurchaseComplete }) => {
+const Cart = ({ cart, setCart, userId, onPurchaseComplete, restoreStock }) => {
     const handleRemove = (id) => {
+        const itemToRemove = cart.find(item => item.id === id);
+        if (itemToRemove) {
+            restoreStock([{ id: itemToRemove.id, units: itemToRemove.units }]);
+        }
         const updatedCart = cart.filter(item => item.id !== id);
         setCart(updatedCart);
+    };
+
+    const handleClearCart = () => {
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: 'Isso irá remover todos os itens do carrinho!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, limpar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                restoreStock(cart.map(item => ({ id: item.id, units: item.units })));
+                setCart([]);
+                Swal.fire('Carrinho limpo!', 'Todos os itens foram removidos e o estoque foi restaurado.', 'success');
+            }
+        });
     };
 
     const handleCheckout = () => {
@@ -18,11 +40,11 @@ const Cart = ({ cart, setCart, userId, onPurchaseComplete }) => {
 
         Promise.all(purchasePromises)
             .then(() => {
-                alert('Compra finalizada com sucesso!');
+                Swal.fire('Sucesso!', 'Compra finalizada com sucesso!', 'success');
                 setCart([]);
                 onPurchaseComplete();
             })
-            .catch(err => alert('Erro ao finalizar a compra: ' + err));
+            .catch(err => Swal.fire('Erro!', `Erro ao finalizar a compra: ${err}`, 'error'));
     };
 
     const total = cart.reduce((sum, item) => sum + item.price * item.units, 0);
@@ -48,7 +70,10 @@ const Cart = ({ cart, setCart, userId, onPurchaseComplete }) => {
                         ))}
                     </ul>
                     <h4>Total: R$ {total.toFixed(2)}</h4>
-                    <button className="btn btn-primary" onClick={handleCheckout}>Finalizar Compra</button>
+                    <div className="d-flex justify-content-between">
+                        <button className="btn btn-danger" onClick={handleClearCart}>Limpar Carrinho</button>
+                        <button className="btn btn-primary" onClick={handleCheckout}>Finalizar Compra</button>
+                    </div>
                 </>
             )}
         </div>

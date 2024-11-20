@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faHistory } from '@fortawesome/free-solid-svg-icons';
 
 const Products = ({ products, addToCart, setView, cartCount }) => {
-    const [quantities, setQuantities] = useState({});
+    const [quantities, setQuantities] = useState({}); // Armazena as quantidades selecionadas para cada produto
 
+    // Atualiza a quantidade selecionada de um produto
     const handleQuantityChange = (id, value, max) => {
         if (value > 0 && value <= max) {
             setQuantities(prev => ({ ...prev, [id]: value }));
         }
     };
 
+    // Lida com a adição de um produto ao carrinho
     const handleAddToCart = (product) => {
         const quantity = quantities[product.id] || 1;
 
@@ -24,12 +24,27 @@ const Products = ({ products, addToCart, setView, cartCount }) => {
             return;
         }
 
-        addToCart({ ...product, units: quantity });
-
         Swal.fire({
-            icon: 'success',
-            title: 'Adicionado!',
-            text: `${quantity} unidade(s) de "${product.name}" foram adicionadas ao carrinho.`,
+            title: 'Adicionar ao Carrinho?',
+            html: `
+                <strong>Produto:</strong> ${product.name}<br/>
+                <strong>Quantidade:</strong> ${quantity}<br/>
+                <strong>Total:</strong> R$ ${(quantity * product.price).toFixed(2)}
+            `,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Adicionar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                addToCart(product, quantity);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Adicionado!',
+                    text: `${quantity} unidade(s) de "${product.name}" foram adicionadas ao carrinho.`,
+                });
+            }
         });
     };
 
@@ -37,19 +52,6 @@ const Products = ({ products, addToCart, setView, cartCount }) => {
         <div className="container mt-4">
             <div className="d-flex justify-content-between align-items-center">
                 <h2>Produtos</h2>
-                <div className="d-flex gap-3">
-                    <button className="btn btn-light position-relative" onClick={() => setView('cart')}>
-                        <FontAwesomeIcon icon={faShoppingCart} size="2x" />
-                        {cartCount > 0 && (
-                            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                {cartCount}
-                            </span>
-                        )}
-                    </button>
-                    <button className="btn btn-light" onClick={() => setView('history')}>
-                        <FontAwesomeIcon icon={faHistory} size="2x" />
-                    </button>
-                </div>
             </div>
             <div className="row">
                 {products.map(product => (
