@@ -7,12 +7,20 @@ const app = express();
 const PORT = 3001;
 
 // Configuração do banco de dados
+// const db = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'libertet_virtualstore',
+//     password: '8HSBJFQ-E9@?',
+//     database: 'libertet_virtualstore',
+//     decimalNumbers: true,
+// });
+
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'virtual_store',
-    decimalNumbers: true, 
+    decimalNumbers: true,
 });
 
 // Conexão com o banco de dados
@@ -45,19 +53,31 @@ app.get('/api/products', (req, res) => {
 // Rota para verificar login
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-    const query = 'SELECT * FROM users WHERE email = ? AND password = ?';
+
+    // Validações básicas
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email e senha são obrigatórios' });
+    }
+
+    // Consulta ao banco de dados para verificar o usuário
+    const query = 'SELECT id, name, email FROM users WHERE email = ? AND password = ?';
     db.query(query, [email, password], (err, results) => {
         if (err) {
-            res.status(500).send(err);
-            return;
+            console.error('Erro ao consultar o banco de dados:', err);
+            return res.status(500).json({ message: 'Erro no servidor' });
         }
+
         if (results.length > 0) {
-            res.json(results[0]);
+            // Usuário encontrado
+            const user = results[0];
+            res.json(user);
         } else {
+            // Usuário não encontrado
             res.status(401).json({ message: 'Email ou senha incorretos' });
         }
     });
 });
+
 
 // Rota para registrar uma compra e atualizar o estoque
 app.post('/api/purchase', (req, res) => {

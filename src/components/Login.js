@@ -1,12 +1,27 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(null); // Para exibir mensagens de erro
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onLogin({ id: 1, name: 'Usuário Teste' });
+        try {
+            // Envia as credenciais para o backend
+            const response = await axios.post('http://localhost:3001/api/login', {
+                email,
+                password,
+            });
+            onLogin(response.data); // Chama a função de login com os dados do usuário
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                setError('Email ou senha incorretos.');
+            } else {
+                setError('Erro no servidor. Tente novamente mais tarde.');
+            }
+        }
     };
 
     return (
@@ -34,6 +49,7 @@ const Login = ({ onLogin }) => {
                             required
                         />
                     </div>
+                    {error && <p className="text-danger">{error}</p>}
                     <button type="submit" className="btn btn-primary w-100">Entrar</button>
                 </form>
             </div>
