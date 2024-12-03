@@ -8,21 +8,21 @@ const PORT = 3001;
 
 // Configuração do banco de dados
 
-// const db = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'libertet_virtualstore',
-//     password: '8HSBJFQ-E9@?',
-//     database: 'libertet_virtualstore',
-//     decimalNumbers: true,
-// });
-
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'virtual_store',
+    user: 'libertet_virtualstore',
+    password: 'FcL0WAQlULfF',
+    database: 'libertet_virtualstore',
     decimalNumbers: true,
 });
+
+// const db = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '',
+//     database: 'virtual_store',
+//     decimalNumbers: true,
+// });
 
 // Conexão com o banco de dados
 db.connect((err) => {
